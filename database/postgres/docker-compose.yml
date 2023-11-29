@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  postgres:
+      build:
+        context: .
+        target: postgres
+      container_name: pg
+      restart: unless-stopped
+      ports:
+        - '54322:5432'

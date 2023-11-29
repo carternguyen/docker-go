@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  server: 
+    container_name: server-container
+    build:
+      context: .
+      target: server
+    restart: unless-stopped
+    ports:
+      - "5010:8080"
+  client: 
+    container_name: client-container
+    build:
+      context: .
+      target: client
+    restart: unless-stopped
+    ports:
+      - "5011:8081"

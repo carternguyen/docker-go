@@ -1,0 +1,48 @@
+version: "2"
+
+networks:
+  redis-net:
+    driver: bridge
+
+services:
+  master:
+    image: redis:latest
+    container_name: redis-master
+    ports:
+      - '6379:6379'
+      - '26375:26379'
+    networks:
+      - redis-net
+    environment:
+      - REDIS_PASSWORD=52keBD2wu0Ph
+
+  slave:
+    image: redis:latest
+    container_name: redis-slave
+    command: redis-server --slaveof redis-master 6379
+    ports:
+      - '6378:6379'
+      - '26376:26379'
+    networks:
+      - redis-net
+    environment:
+      - REDIS_PASSWORD=52keBD2wu0Ph
+    depends_on:
+      - master
+
+  sentinel:
+    build:
+      context: .
+    container_name: redis-sentinel
+    ports:
+      - '6377:6379'
+      - '26377:26379'
+    networks:
+      - redis-net
+    environment:
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER=5000
+      - REDIS_PASSWORD=52keBD2wu0Ph
+    depends_on:
+      - master
+      - slave
